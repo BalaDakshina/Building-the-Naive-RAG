@@ -20,7 +20,7 @@ stages:
     is_completed: true
   - id: 3039
     step: 52100
-    is_completed: false
+    is_completed: true
 topics:
   0:
     - title: Introduction to LLMs

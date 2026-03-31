@@ -1,8 +1,9 @@
 import os
 
 from dotenv import load_dotenv
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
-from langchain_openai import OpenAI
+from langchain_openai import OpenAI, ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
@@ -79,25 +80,42 @@ if movie_titles.__contains__(query):
         collection_name=collection_name,
         embedding=embeddings
     )
+
     user_input = input()
-    llm = OpenAI(
+
+    context = "\n\n".join([scene.page_content for scene in scenes])
+
+    prompt_template = ChatPromptTemplate.from_messages([
+        (
+            "system",
+            """You are an expert on movie scripts with deep knowledge of 
+            cinematic storytelling, character development, and scene 
+            construction. Use the following retrieved scenes from the 
+            movie script as context to answer the user's query in detail.
+
+            Context:
+            {context}
+            """
+        ),
+        (
+            "human",
+            "{question}"
+        )
+    ])
+
+    llm = ChatOpenAI(
         api_key=os.getenv("OPEN_API_KEY"),
         model="gpt-4o-mini",
         base_url="https://litellm.aks-hs-prod.int.hyperskill.org/openai",
     )
 
-    rewrite_prompt = f"""Rewrite the following query to emphasize 
-    keywords useful for retrieving relevant movie script scenes:
-    Query: {user_input}
-    Rewritten query (return ONLY the rewritten query, nothing else):"""
+    chain = prompt_template | llm
 
-    rewritten_query = llm.invoke(rewrite_prompt).strip()
-    print(f'Rewritten query to: "{rewritten_query}"')
+    response = chain.invoke({
+        "context": context,
+        "question": user_input
+    })
 
-    results = vector_store.similarity_search(rewritten_query, k=5)
-
-    for i, result in enumerate(results, start=1):
-        print(f"Scene {i}: {result.page_content}")
-
+    print(f"\nFinal Answer:\n{response.content}")
 else:
     print(f"Script for '{query}' wasn't found in the list of movie scripts.")
