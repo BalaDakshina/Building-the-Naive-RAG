@@ -1,5 +1,11 @@
+import os
+
 from dotenv import load_dotenv
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_qdrant import QdrantVectorStore
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams
 
 load_dotenv()
 from langchain_community.document_loaders import IMSDbLoader
@@ -45,5 +51,30 @@ if movie_titles.__contains__(query):
 
     for i, scene in enumerate(scenes, start=1):
         print(f"Scene {i}: {scene.page_content}")
+
+    embeddings = HuggingFaceEndpointEmbeddings(
+        model="sentence-transformers/all-MiniLM-L6-v2",
+        huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    )
+
+    collection_name = query.replace(' ', '-')
+    client = QdrantClient(url="http://localhost:6333")
+    client.collection_exists(collection_name)
+    client.create_collection(
+        collection_name=collection_name,
+        vectors_config=VectorParams(
+            size=384,
+            distance=Distance.COSINE
+        )
+    )
+
+    QdrantVectorStore.from_documents(
+        documents=scenes,
+        embedding=embeddings,
+        url="http://localhost:6333",
+        collection_name=collection_name,
+    )
+
+    print(f"Embedded script for {query}.")
 else:
     print(f"Script for '{query}' wasn't found in the list of movie scripts.")
