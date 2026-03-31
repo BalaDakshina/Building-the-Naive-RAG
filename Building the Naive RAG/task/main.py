@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv()
-
 from langchain_community.document_loaders import IMSDbLoader
 from bs4 import BeautifulSoup
+import re
 import requests
 
 response = requests.get("https://imsdb.com/all-scripts.html")
@@ -27,7 +28,22 @@ if movie_titles.__contains__(query):
     url = f"https://imsdb.com/scripts/{query.replace(' ', '-')}.html."
     loader = IMSDbLoader(url)
     script = loader.load()
-    print(f"Loaded script for {query} from {url}")
-    print(script[0].page_content)
+
+    cleaned_text = re.sub(r'\s+', ' ', script[0].page_content).strip()
+    print(cleaned_text)
+
+    splitter = RecursiveCharacterTextSplitter(
+        separators=["INT."],
+        chunk_size=500,
+        chunk_overlap=10
+    )
+
+    scenes = splitter.create_documents([cleaned_text])
+
+    print(f"Loaded script for {query} from {url}.")
+    print(f"Found {len(scenes)} scenes in the script for {query}.")
+
+    for i, scene in enumerate(scenes, start=1):
+        print(f"Scene {i}: {scene.page_content}")
 else:
     print(f"Script for '{query}' wasn't found in the list of movie scripts.")
