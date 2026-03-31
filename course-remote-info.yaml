@@ -1,0 +1,86 @@
+hyperskill_project:
+  id: 518
+  ide_files: https://hyperskill.org/api/projects/518/additional-files/additional_files.json
+  is_template_based: false
+  use_ide: true
+  environment: unittest
+update_date: "Thu, 01 Jan 1970 00:00:00 UTC"
+stages:
+  - id: 3035
+    step: 52096
+    is_completed: true
+  - id: 3036
+    step: 52097
+    is_completed: false
+  - id: 3037
+    step: 52098
+    is_completed: false
+  - id: 3038
+    step: 52099
+    is_completed: false
+  - id: 3039
+    step: 52100
+    is_completed: false
+topics:
+  0:
+    - title: Introduction to LLMs
+      theory_id: 51833
+    - title: Introduction to prompt engineering
+      theory_id: 43279
+    - title: Introduction to the OpenAI API
+      theory_id: 53368
+    - title: Function calling with the OpenAI API
+      theory_id: 53369
+    - title: LangChain basics
+      theory_id: 53049
+    - title: Introduction to machine learning
+      theory_id: 10403
+    - title: Introduction to neural networks
+      theory_id: 25701
+    - title: Introduction to retrieval-augmented generation
+      theory_id: 51908
+    - title: Query augmentation techniques
+      theory_id: 52324
+    - title: Text chunking techniques
+      theory_id: 52101
+    - title: Libraries
+      theory_id: 8504
+    - title: Frameworks
+      theory_id: 6701
+    - title: Introduction to API
+      theory_id: 17007
+    - title: Natural language processing
+      theory_id: 9157
+    - title: Introduction to NLTK
+      theory_id: 31188
+    - title: Overview of SpaCy
+      theory_id: 11197
+    - title: Tokenization
+      theory_id: 51949
+    - title: Word embeddings
+      theory_id: 25209
+    - title: Contextualized embeddings
+      theory_id: 34137
+    - title: JSON
+      theory_id: 6854
+    - title: Working with environment variables and .env files
+      theory_id: 41735
+  2:
+    - title: Introduction to vector search
+      theory_id: 51979
+    - title: Hierarchical navigable small worlds
+      theory_id: 52669
+    - title: Overview of Qdrant
+      theory_id: 52338
+    - title: Filtering in Qdrant
+      theory_id: 52248
+    - title: Tokenization implementation
+      theory_id: 10363
+    - title: Bag-of-words
+      theory_id: 23015
+    - title: Introduction to Hugging Face
+      theory_id: 30070
+    - title: Hugging Face datasets
+      theory_id: 30092
+    - title: The overview of text similarity metrics
+      theory_id: 22997

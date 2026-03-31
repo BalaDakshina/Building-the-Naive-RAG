@@ -1,0 +1,19 @@
+type: hyperskill
+title: Building the Naive RAG
+language: English
+summary: "<p>Movies whisk us away to magical realms and ignite our imagination. So\
+  \ why settle for just watching your favourite films when you can re-imagine them?\
+  \ In this project, you'll feed a large language model a dataset of movie scripts\
+  \ to craft brand-new scenes, character dialogues, and even invent entirely new twists.</p><br/><br/>Learn\
+  \ more at <a href=\"https://hyperskill.org/projects/518?utm_source=ide&utm_medium=ide&utm_campaign=ide&utm_content=project-card\"\
+  >https://hyperskill.org/projects/518</a>"
+programming_language: Python
+programming_language_version: 3.10
+environment: unittest
+content:
+  - Building the Naive RAG
+additional_files:
+  - name: requirements.txt
+    visible: true
+mode: Study
+yaml_version: 5

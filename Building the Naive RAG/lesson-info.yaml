@@ -1,0 +1,7 @@
+type: framework
+content:
+  - Load
+  - Split
+  - Embed
+  - Retrieve
+  - Generate
