@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_openai import OpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
@@ -36,7 +37,6 @@ if movie_titles.__contains__(query):
     script = loader.load()
 
     cleaned_text = re.sub(r'\s+', ' ', script[0].page_content).strip()
-    print(cleaned_text)
 
     splitter = RecursiveCharacterTextSplitter(
         separators=["INT."],
@@ -48,9 +48,6 @@ if movie_titles.__contains__(query):
 
     print(f"Loaded script for {query} from {url}.")
     print(f"Found {len(scenes)} scenes in the script for {query}.")
-
-    for i, scene in enumerate(scenes, start=1):
-        print(f"Scene {i}: {scene.page_content}")
 
     embeddings = HuggingFaceEndpointEmbeddings(
         model="sentence-transformers/all-MiniLM-L6-v2",
@@ -76,5 +73,31 @@ if movie_titles.__contains__(query):
     )
 
     print(f"Embedded script for {query}.")
+
+    vector_store = QdrantVectorStore(
+        client=client,
+        collection_name=collection_name,
+        embedding=embeddings
+    )
+    user_input = input()
+    llm = OpenAI(
+        api_key=os.getenv("OPEN_API_KEY"),
+        model="gpt-4o-mini",
+        base_url="https://litellm.aks-hs-prod.int.hyperskill.org/openai",
+    )
+
+    rewrite_prompt = f"""Rewrite the following query to emphasize 
+    keywords useful for retrieving relevant movie script scenes:
+    Query: {user_input}
+    Rewritten query (return ONLY the rewritten query, nothing else):"""
+
+    rewritten_query = llm.invoke(rewrite_prompt).strip()
+    print(f'Rewritten query to: "{rewritten_query}"')
+
+    results = vector_store.similarity_search(rewritten_query, k=5)
+
+    for i, result in enumerate(results, start=1):
+        print(f"Scene {i}: {result.page_content}")
+
 else:
     print(f"Script for '{query}' wasn't found in the list of movie scripts.")
